@@ -16,8 +16,8 @@ Gameplay -
 
 Instructions -
 1.  Cozmo needs to find three cubes before he can interact with them.
-2.  Works best when all three cubes are placed in front of Cozmo. Though the lookaround behavior will activate at the
-    start to locate the cubes.
+2.  Works best when all three cubes are placed in front of Cozmo. However, the lookaround in place behavior will
+    activate at the start to locate the cubes.
 '''
 
 
@@ -130,7 +130,8 @@ class PlaceCubesAround:
         # Look around for cubes
         lookaround = self.coz.start_behavior(cozmo.behavior.BehaviorTypes.LookAroundInPlace)
         try:
-            self.cubes = await self.coz.world.wait_until_observe_num_objects(num=3, object_type=cozmo.objects.LightCube, timeout=30)
+            self.cubes = await self.coz.world.wait_until_observe_num_objects(num=3, object_type=cozmo.objects.LightCube,
+                                                                             timeout=30)
         except TimeoutError:
             print("Could not find all 3 cubes! :( Only found ", len(self.cubes), "Cube(s)")
             return
