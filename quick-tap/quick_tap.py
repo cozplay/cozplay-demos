@@ -156,7 +156,7 @@ class QuickTapGame(CozGame):
                 await self.coz.say_text(text=random.choice(text_Arr), duration_scalar=1.3).wait_for_completed()
                 await self.coz.play_anim(random.choice(
                     ["anim_speedtap_losehand_01", "anim_speedtap_losehand_02", "anim_speedtap_losehand_03",
-                     "anim_freeplay_hitground", "ID_test_shiver", "anim_keepaway_fakeout_02"])).wait_for_completed()
+                     "ID_test_shiver", "anim_keepaway_fakeout_02"])).wait_for_completed()
 
             await self.on_tap_round_complete()
 
