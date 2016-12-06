@@ -178,7 +178,7 @@ class PongGame(CozGame):
 
     async def on_cozmo_miss(self, pattern):
         self.cubes[0].set_lights(cozmo.lights.red_light.flash())
-        anim_arr = ["anim_speedtap_losehand_01","anim_speedtap_losehand_03","anim_freeplay_hitground","anim_keepaway_fakeout_02","anim_speedtap_losehand_02","ID_test_shiver"]
+        anim_arr = ["anim_speedtap_losehand_01","anim_speedtap_losehand_03","anim_keepaway_fakeout_02","anim_speedtap_losehand_02","ID_test_shiver"]
         await self.coz.play_anim(anim_arr[self.coz_sad_index]).wait_for_completed()
         self.coz_sad_index = (self.coz_sad_index + 1) % len(anim_arr)
 

@@ -25,8 +25,6 @@ class CozmoAnimation:
             "majorfail",
             "anim_pounce_fail_01",
             "anim_pounce_fail_02",
-            "anim_freeplay_hitground",
-            "anim_freeplay_falloffcliff",
             "anim_bored_event_01",
             "ID_test_shiver",
             "anim_gotosleep_off_01",
@@ -59,7 +57,6 @@ class CozmoAnimation:
         idle_anims = [
             "anim_reacttoblock_react_short_01"
             "anim_reacttoblock_react_short_02"
-            "anim_reacttoblock_lookloop_01"
             "anim_hiking_react_04",
             "anim_explorer_driving01_start_01",
             "anim_explorer_driving01_start_02",
