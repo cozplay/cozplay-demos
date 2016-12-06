@@ -101,7 +101,7 @@ class PlaceCubesAround:
         if turn_degree == 0:
             await self.coz.say_text("Tie tie", duration_scalar=0.75, voice_pitch=1.0).wait_for_completed()
         else:
-            await self.coz.play_anim("anim_reacttoblock_ask2ndblock_01").wait_for_completed()
+            await self.coz.play_anim("anim_reacttoblock_ask_01").wait_for_completed()
 
     async def game_loop(self):
         """ Define the placement of each cube around Cozmo """
