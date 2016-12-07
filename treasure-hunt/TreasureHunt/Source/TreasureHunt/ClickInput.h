@@ -9,7 +9,7 @@
 #include "ClickInput.generated.h"
 
 
-// TODO: Restructure classes if time. No reason input class should be handling general game logic.
+// TODO: Restructure into multiple classes... Most of the game logic ended up here.
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TREASUREHUNT_API UClickInput : public UActorComponent
 {
@@ -72,9 +72,6 @@ private:
     
     UFUNCTION()
     void PlaceBait();
-    
-    UFUNCTION()
-    void OnReachClaimed();
     
     UFUNCTION()
     void OnReach();

@@ -6,8 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "RobotTracker.generated.h"
 
-// TODO: Give RobotTracker and LightCubeTracker a shared base class
-//       Move game-specific stuff to subclass (distraction, etc.)
 UCLASS()
 class TREASUREHUNT_API ARobotTracker : public APoseTracker
 {
@@ -23,6 +21,7 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
     
+    // Shows or hides circle outlining around Cozmo
     UFUNCTION()
     void ShowOutline(bool shouldShow);
     
@@ -31,7 +30,4 @@ protected:
     
 private:
     UStaticMeshComponent *_outline;
-    
-    UPROPERTY(EditAnywhere)
-    float _distractionTime = 5.0;
 };

@@ -51,10 +51,6 @@ void UClickInput::TickComponent( float DeltaTime, ELevelTick TickType, FActorCom
     bool isHoveredTreasure = (_hoveredActor != NULL) && _hoveredActor->IsA(ATreasure::StaticClass());
     bool isHoveredRobot = (_hoveredActor != NULL) && _hoveredActor->IsA(ARobotTracker::StaticClass());
     
-//    if (hitActor != NULL) {
-//        UE_LOG(LogTemp, Warning, TEXT("NON-NULL HIT"));
-//    }
-    
     if (isNewActor) {
         // Remove outline from previous hovered actor
         if (_hoveredActor != NULL) {
@@ -111,24 +107,17 @@ void UClickInput::TickComponent( float DeltaTime, ELevelTick TickType, FActorCom
 
 void UClickInput::OnClick()
 {
-    if(_hoveredActor != NULL && _hoveredActor->IsA(ARobotTracker::StaticClass())) {
+    if (_hoveredActor == NULL) {
+        return;
+    }
+    
+    if(_hoveredActor->IsA(ARobotTracker::StaticClass())) {
         _batteryLevel = 100.0f;
         _batteryText->SetText(FString::Printf(TEXT("|||100%%")));
         _batterySound->Play();
-        
-    // NOTE: _baitEnabled was not properly reenabled always, possibly related to Cozmo go_to_pose not finishing and losing
-    // Cozmo's world. But with changes for softs, it shouldn't be necessary
-    } else if (true/*_baitEnabled*/) {
-        if (_hoveredActor != NULL && _hoveredActor->IsA(ATreasure::StaticClass())) {
-            if (((ATreasure *)_hoveredActor)->AttemptClaim()) {
-                PlaceBait();
-            }
-          // For Softs: Disable bait at non-treasure location
-//        } else if (ATreasure::ClaimedTreasure() == NULL) {
-//            PlaceBait();
-//        } else if (ATreasure::ClaimedTreasure()->IsReached()) {
-//            ATreasure::ClaimedTreasure()->SetIsActive(false);
-//            PlaceBait();
+    } else if (_hoveredActor->IsA(ATreasure::StaticClass())) {
+        if (((ATreasure *)_hoveredActor)->AttemptClaim()) {
+            PlaceBait();
         }
     }
 }
@@ -145,31 +134,18 @@ void UClickInput::PlaceBait()
         targetLocation.X = location.X;
         targetLocation.Y = location.Y;
         _target->SetActorLocation(targetLocation);
-        _cozmoUE->ForceGoToPosition(targetLocation.X * 10.0, targetLocation.Y * -10.0, this, TEXT("OnReachClaimed"));
-        _claimSound->Play();
-    } else {
-        // Move to exactly to cursor location if not touching treasure
-        FVector location = this->GetOwner()->GetActorLocation();
-        targetLocation.X = location.X;
-        targetLocation.Y = location.Y;
-        _target->SetActorLocation(targetLocation);
         _cozmoUE->ForceGoToPosition(targetLocation.X * 10.0, targetLocation.Y * -10.0, this, TEXT("OnReach"));
-        _baitSound->Play();
+        _claimSound->Play();
     }
 }
 
-void UClickInput::OnReachClaimed()
+void UClickInput::OnReach()
 {
     ATreasure::ClaimedTreasure()->OnReached();
-    _cozmoUE->RunCozmoCoroutine("self.on_reach_success()", this, TEXT("SetBaitEnabled true"));
+    _cozmoUE->RunCozmoCoroutine("self.on_reach()", this, TEXT("SetBaitEnabled true"));
     _score++;
     _scoreText->SetText(FString::Printf(TEXT("%d"), _score));
     _digSound->Play();
-}
-        
-void UClickInput::OnReach()
-{
-    _cozmoUE->RunCozmoCoroutine("self.on_reach_failure()", this, TEXT("SetBaitEnabled true"));
 }
 
 void UClickInput::ToggleDebug()

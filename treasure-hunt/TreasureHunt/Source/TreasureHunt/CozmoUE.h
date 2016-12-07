@@ -37,12 +37,6 @@ struct TREASUREHUNT_API FCozmoPoseStruct
             zAngleRadians = FCString::Atof(*poseStrings[8]);
             zAngleDegrees = FCString::Atof(*poseStrings[9]);
         }
-        
-//        UE_LOG(LogTemp, Warning, TEXT("OriginID: %d"), originID);
-//        UE_LOG(LogTemp, Warning, TEXT("Position: (%f,%f,%f)"), position.X, position.Y, position.Z);
-//        UE_LOG(LogTemp, Warning, TEXT("Rotation: (%f,%f,%f,%f)"), rotation.X, rotation.Y, rotation.Z, rotation.W);
-//        UE_LOG(LogTemp, Warning, TEXT("ZRad: %f"), zAngleRadians);
-//        UE_LOG(LogTemp, Warning, TEXT("ZRad: %f"), zAngleDegrees);
     }
     
     // Converts pose in Cozmo's coordinate system to Unreal's coordinate system
@@ -64,7 +58,7 @@ struct TREASUREHUNT_API FCozmoPoseStruct
     float zAngleDegrees;
 };
 
-// TODO: Better naming consistency Cozmo vs Robot
+
 UCLASS()
 class TREASUREHUNT_API ACozmoUE : public AActor
 {
@@ -77,6 +71,7 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
+    // Called when the game ends
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
     
 	// Called every frame
@@ -85,11 +80,9 @@ public:
     // Runs an async function in the Cozmo event loop and optionally invokes C++ callback on main thread upon completion
     // NOTE: coroutine is just whatever string would be typed to create the coroutine from within our CozmoBridge
     // instance.
-    // E.g. Pass TEXT("self.sample_coroutine1()") to run asynchronous function sample_coroutine1 of the CozmoBridge
+    // E.g. Pass TEXT("self.sample_coroutine()") to run asynchronous function sample_coroutine of the CozmoBridge
     // class.
     // NOTE: C++ Callback is formatted "FunctionName arg1 arg2 ..."
-    // TODO: Safer method for passing coroutine argument
-    // TODO: Option for return value of coroutine as input to callback
     void RunCozmoCoroutine(FString coroutine, UObject *doneUObj = NULL, FString doneCall = TEXT(""));
     
     // Check if Cozmo is connected and ready (synchronous)
@@ -98,43 +91,13 @@ public:
     // Get Cozmo's current pose
     FCozmoPoseStruct GetCozmoPose();
     
-    // Returns true if cube with given index is visible
-    bool IsCubeVisible(int index);
-    
-    // Get cube pose
-    // Returns null if no cube with index exists
-    FCozmoPoseStruct GetCubePose(int index);
-    
-    UFUNCTION()
-    void SampleCallback1();
-    
-    UFUNCTION()
-    void SampleCallback2();
-    
-    // Goes to position using go_to_pose
+    // Goes to position using go_to_pose, aborting any current actions
     UFUNCTION()
     void ForceGoToPosition(float x, float y, UObject *doneUObj=NULL, FString doneCall=TEXT(""));
     
 private:
-    UFUNCTION()
-    void UpdateCameraFeed();
-    
-    UPROPERTY(EditAnywhere)
-    bool _shouldRunSample = false;
     
     bool _isCozmoReady = false;
-    
-    /** How many cubes to look for immediately */
-    UPROPERTY(EditAnywhere, meta = (ClampMin = "0", ClampMax = "3", UIMin = "0", UIMax = "3"))
-    int _initialCubeCheck;
-    
-    UPROPERTY(EditAnywhere)
-    int _initialCubeCheckTimeout = 10;
-    
-    bool _didInitialCubeCheck = false;
-    
-    UPROPERTY()
-    UTexture2D *cameraFeed;
     
     UPythonComponent *_cozmoBridge;
 };

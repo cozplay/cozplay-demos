@@ -8,12 +8,6 @@ import PIL.Image
 import numpy
 import sys
 
-# Constants
-# TEMP: We should expose cube colors with API, but for now we just set color based on index
-CUBE_COLORS = [cozmo.lights.Color(rgba=(255, 0, 0, 255)),
-               cozmo.lights.Color(rgba=(0, 0, 255, 255)),
-               cozmo.lights.Color(rgba=(255, 255, 0, 255))]
-
 class CozmoBridge:
     # Initialization
     def __init__(self, *a, **kw):
@@ -25,7 +19,6 @@ class CozmoBridge:
         self._cozmo_loop = None
         self._cozmo_conn = None
         self._cozmo_robot = None
-        self._cozmo_cubes = []
         self._cozmo_connected = False
         self._coroutine_future = None
         self._coroutine_done_uobj = None   # Uobject on which the below callback should be invoked
@@ -46,7 +39,6 @@ class CozmoBridge:
         self._cozmo_thread = None
         self._cozmo_loop = None
         self._cozmo_robot = None
-        self._cozmo_cubes = []
         self._coroutine_future = None
         self._coroutine_done_uobj = None
         self._coroutine_done_call = None       
@@ -99,21 +91,6 @@ class CozmoBridge:
             await asyncio.sleep(0)
         self._cozmo_robot.abort_all_actions()
         self._cozmo_robot.stop_all_motors()
-    
-    async def sample_coroutine1(self):
-        ue.log('UECozmo: Sample Coroutine 1/2')
-        await self._cozmo_robot.say_text("sample").wait_for_completed()
-        # await self._cozmo_robot.say_text("One").wait_for_completed()
-        # await self._cozmo_robot.say_text("Two").wait_for_completed()
-    
-    async def sample_coroutine2(self):
-        ue.log('UECozmo: Sample Coroutine 2/2')
-        # await self._cozmo_robot.say_text("sample").wait_for_completed()
-        # await self._cozmo_robot.say_text("Five").wait_for_completed()
-        # await self._cozmo_robot.say_text("Six").wait_for_completed()
-        # self._cozmo_robot.start_behavior(cozmo.behavior.BehaviorTypes.LookAroundInPlace)
-        await self._cozmo_robot.go_to_pose(cozmo.util.Pose(200, -200, 0, angle_z=cozmo.util.Angle(degrees=0)), False).wait_for_completed()
-        # await self._cozmo_robot.drive_straight(cozmo.util.Distance(distance_mm=200), cozmo.util.Speed(1000), False).wait_for_completed();
             
     def is_cozmo_ready(self) -> bool:
         return self._cozmo_robot is not None and self._cozmo_robot.is_ready
@@ -137,75 +114,6 @@ class CozmoBridge:
                 str(pose.rotation.angle_z.radians - self._start_pose.rotation.angle_z.radians),
                 str(pose.rotation.angle_z.degrees - self._start_pose.rotation.angle_z.degrees)]
     
-    # Waits for a certain number of cubes to be observed (not necessarily simultaneously) and fills up self._cozmo_cubes
-    # with at most that many objects
-    async def wait_for_cubes_observed(self, count, timeout) -> int:
-        ue.log("Attempting to observe: count " + str(count) + ", timeout " + str(timeout))
-        already_visible = []
-        new_cubes = []
-        for visible_object in self._cozmo_robot.world.visible_objects:
-            if isinstance(object, cozmo.objects.LightCube):
-                already_visible.append(visible_object)
-        
-        ue.log("ALREADY VISIBLE: " + str(len(already_visible)))
-        
-        new_cubes = await self._cozmo_robot.world.wait_until_observe_num_objects(count-len(already_visible),
-                                                                                 cozmo.objects.LightCube, timeout)
-        ue.log("NEW CUBES: " + str(len(new_cubes)))
-        
-        self._cozmo_cubes = list(set(already_visible + new_cubes))
-        ue.log("Observed " + str(len(self._cozmo_cubes)) + " cubes")
-        
-        # for index,cube in eumerate(self._cozmo_cubes):
-        #     self._cozmo_cubes[index].set_lights(cozmo.lights.Light(cozmo.lights.Color(rgba=(255, 255, 0, 255))))
-        
-        return len(self._cozmo_cubes)
-    
-    # Waits for a certain number of cubes to be observed simultaneously
-    # Returns number of objects seen if count or higher, otherwise 0
-    # Warning: Does not fill up self._cozmo_cubes
-    async def wait_for_cubes_visible(self, count, timeout) -> int:
-        visible = 0
-        try:
-            visible = await self._cozmo_robot.world.wait_until_num_objects_visible(count,
-                                                                                   cozmo.objects.LightCube,
-                                                                                   timeout)
-        except TimeoutError:
-            ue.log("Did not see all " + visible + " cubes")
-        finally:
-            return visible
-    
-    def is_cube_visible(self, index) -> bool:
-        return index >= len(self._cozmo_cubes) and self._cozmo_cubes[index].is_visible
-    
-    def get_cube_pose(self, index):
-        if (index >= len(self._cozmo_cubes)):
-            return []
-        pose = self._cozmo_cubes[index].pose
-        qCur = (pose.rotation.q0, pose.rotation.q1, pose.rotation.q2, pose.rotation.q3)
-        qStartInv = (self._start_pose.rotation.q0, -self._start_pose.rotation.q1, -self._start_pose.rotation.q2, -self._start_pose.rotation.q3)
-        return [str(pose.origin_id),
-                str(pose.position.x - self._start_pose.position.x),
-                str(pose.position.y - self._start_pose.position.y),
-                str(pose.position.z - self._start_pose.position.z),
-                str(qCur[0]*qStartInv[0] - qCur[1]*qStartInv[1] - qCur[2]*qStartInv[2] - qCur[3]*qStartInv[3]),
-                str(qCur[0]*qStartInv[1] + qCur[1]*qStartInv[0] + qCur[2]*qStartInv[3] + qCur[3]*qStartInv[2]),
-                str(qCur[0]*qStartInv[2] + qCur[2]*qStartInv[0] + qCur[3]*qStartInv[1] + qCur[1]*qStartInv[3]),
-                str(qCur[0]*qStartInv[3] + qCur[3]*qStartInv[0] + qCur[1]*qStartInv[2] + qCur[2]*qStartInv[1]),
-                str(pose.rotation.angle_z.radians - self._start_pose.rotation.angle_z.radians),
-                str(pose.rotation.angle_z.degrees - self._start_pose.rotation.angle_z.degrees)]
-    
-    def get_camera_feed(self) -> str:
-        latest = self._cozmo_robot.world.latest_image
-        if latest is None:
-            return ""
-        else:
-            latest.annotate_image()
-            ue.log("Outgoing length: " + str(len(latest.raw_image.tobytes())))
-            return str(latest.raw_image.tobytes())
-            #return str(latest.raw_image.tobytes("raw", "RGB"))
-            #return latest.convert("RGBA").tostring("raw", "RGBA")
-    
     async def force_go_to_position(self, x, y):
         ue.log("Force go to position: " + str(x) + " " + str(y))
         self._cozmo_robot.abort_all_actions()
@@ -215,22 +123,14 @@ class CozmoBridge:
                                            angle_z=self._start_pose.rotation.angle_z), False).wait_for_completed()
         ue.log("Got to position")
     
-    # initial Cozmo behavior
-    # TODO: Move into Treasure Hunt-specific subclass of cozmo_bridge (or play animation directly from C++ side)
+    # Cozmo's behavior on game start
     async def on_treasure_hunt_start(self):
         await self._cozmo_robot.say_text("Help me find the treasure").wait_for_completed()
         self._cozmo_robot.start_behavior(cozmo.behavior.BehaviorTypes.LookAroundInPlace)
     
     # Called when Cozmo reaches treasure
-    # TODO: Move into Treasure Hunt-specific subclass of cozmo_bridge (or play animation directly from C++ side)
-    async def on_reach_success(self):
+    async def on_reach(self):
         await self._cozmo_robot.play_anim_trigger(cozmo.anim.Triggers.OnSpeedtapGameCozmoWinHighIntensity).wait_for_completed()
-        self._cozmo_robot.start_behavior(cozmo.behavior.BehaviorTypes.LookAroundInPlace)
-
-    # Called when Cozmo reaches target without treasure
-    # TODO: Move into Treasure Hunt-specific subclass of cozmo_bridge (or play animation directly from C++ side)
-    async def on_reach_failure(self):
-        await self._cozmo_robot.play_anim_trigger(cozmo.anim.Triggers.FrustratedByFailure).wait_for_completed()
         self._cozmo_robot.start_behavior(cozmo.behavior.BehaviorTypes.LookAroundInPlace)
     
     @property
