@@ -19,10 +19,10 @@ How to set it up:
 
 3. Flask sets up the server on port 5000. To have ngrok set up the tunnel, enter the following command: `ngrok http 5000`
 4. The console will now provide details of the tunell URLs and will display incoming requests. Keep this window alive:
-![Ngrok Console](/readme_img/ngrok_console.png?raw=true "Ngrok Console")
+![Ngrok Console](/nice-to-meet-you/readme_img/ngrok_console.png?raw=true "Ngrok Console")
 5. The details of the tunnel URLs with a more verbose debug will be available at the following url: http://127.0.0.1:4040/
 6. Copy one of the URLs (in this example: http://330b43d6.ngrok.io/) to be used for the next step
-![Ngrok](/readme_img/ngrok.png?raw=true "Ngrok")
+![Ngrok](/nice-to-meet-you/readme_img/ngrok.png?raw=true "Ngrok")
 
 **PART II:**	
 A `twilio` account is used to set up a phone number for Cozmo to send messages via SMS/MMS.
@@ -32,11 +32,11 @@ How to set it up:
 1. Sign up for a Twilio account: https://www.twilio.com/
 
 2. You will receive your Account SID and Authorization Token that will be used for all interactions with the API.
-![Twilio](/readme_img/twilio.png?raw=true "Twilio")
+![Twilio](/nice-to-meet-you/readme_img/twilio.png?raw=true "Twilio")
 
 3. Go to the Phone numbers section and choose a number to be associated with the account. You are allowed one free number with a trial account.
 4. Once you have a number assigned to the account, select it by going to Phone Numbers -> Manage Numbers -> Active Numbers. Under messaging, change ‘A message comes in’ to Webhook and the URL to the ngrok URL as copied in step 7 of PART I.
-![Twilio Config](/readme_img/twilio_config.png?raw=true "Twilio Config")
+![Twilio Config](/nice-to-meet-you/readme_img/twilio_config.png?raw=true "Twilio Config")
 
 5. Detailed information about Twilio package for Python can be found at: https://www.twilio.com/docs/quickstart/python
 
