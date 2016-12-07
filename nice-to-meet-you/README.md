@@ -86,7 +86,3 @@ The other modules can be installed via pip if not already present:
 3. The above limitation also led to a lot of hard coding which has led to ugly and non reusable code.
 4. Using Cozmo’s screen for pictures/animations other than his eyes takes away his emotiveness and should not be used for extended periods.
 5. Threading helped to alter the sequential mode of the prototypes before this. However, due to the implementation of the python asynchronous model, it’s still not possible to handle real time input while Cozmo is animating or have Cozmo take on multiple behaviors without breaking the flow of the game in some way.
-
-## Get the Code
-
-https://github.com/cozplay/cozplay-demos/blob/master/nice-to-meet-you/nice_to_meet_you.py
