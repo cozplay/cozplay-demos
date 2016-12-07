@@ -13,8 +13,7 @@ class CozmoAnimation:
             "majorwin",
             "anim_pounce_success_01",
             "anim_pounce_success_02",
-            "anim_meetcozmo_celebration_02",
-            "anim_driving_happy_start_01",
+            "anim_meetcozmo_celebration_02"
         ]
 
         return random.choice(pos_anims)
