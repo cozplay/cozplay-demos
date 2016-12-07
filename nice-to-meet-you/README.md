@@ -2,12 +2,7 @@
 
 _Nice to Meet You_ is an experience where Cozmo looks for a new face and tries to befriend the person. Once done, he uses text messaging to maintain contact and continue the relationship.
 
-## Photos/Video
-http://i.giphy.com/3o6Zt9IAgrLZ5cfdCM.gif
-http://i.giphy.com/l0HlLpStIuB5BqG9a.gif
-http://i.giphy.com/3o6Zt4bpjipmA2EgyA.gif
-
-**YouTube:**
+## YouTube video
 
 https://youtu.be/IeQAT0WpIC8
 
@@ -24,11 +19,10 @@ How to set it up:
 
 3. Flask sets up the server on port 5000. To have ngrok set up the tunnel, enter the following command: `ngrok http 5000`
 4. The console will now provide details of the tunell URLs and will display incoming requests. Keep this window alive:
-<img src="/uploads/anki/original/1X/6425ec49c2bda70abe9415ace1923d9e6e0cdd99.png" width="641" height="151">	
-
+![Ngrok Console](/readme_img/ngrok_console.png?raw=true "Ngrok Console")
 5. The details of the tunnel URLs with a more verbose debug will be available at the following url: http://127.0.0.1:4040/
 6. Copy one of the URLs (in this example: http://330b43d6.ngrok.io/) to be used for the next step
-<img src="/uploads/anki/original/1X/a44dba15ef6468b090bde3b51fa43e586ec5398d.PNG" width="683" height="247">
+![Ngrok](/readme_img/ngrok.png?raw=true "Ngrok")
 
 **PART II:**	
 A `twilio` account is used to set up a phone number for Cozmo to send messages via SMS/MMS.
@@ -38,11 +32,11 @@ How to set it up:
 1. Sign up for a Twilio account: https://www.twilio.com/
 
 2. You will receive your Account SID and Authorization Token that will be used for all interactions with the API.
-<img src="/uploads/anki/original/1X/46403ec643eeeb015fbebfb6752beffebca46119.PNG" width="517" height="190">
+![Twilio](/readme_img/twilio.png?raw=true "Twilio")
 
 3. Go to the Phone numbers section and choose a number to be associated with the account. You are allowed one free number with a trial account.
 4. Once you have a number assigned to the account, select it by going to Phone Numbers -> Manage Numbers -> Active Numbers. Under messaging, change ‘A message comes in’ to Webhook and the URL to the ngrok URL as copied in step 7 of PART I.
-<img src="/uploads/anki/original/1X/8c9afe2b72a47e561ab471ef432356dca0c0b07b.PNG" width="566" height="500">
+![Twilio Config](/readme_img/twilio_config.png?raw=true "Twilio Config")
 
 5. Detailed information about Twilio package for Python can be found at: https://www.twilio.com/docs/quickstart/python
 
