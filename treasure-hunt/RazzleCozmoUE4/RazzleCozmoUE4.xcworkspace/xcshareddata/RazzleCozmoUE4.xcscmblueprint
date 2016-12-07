@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "9862222FB2EC60A32348D9650B2C29928C0A07CB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "B7350B5592D16BB5D738CBCD96DE860E50C9E4DD" : 9223372036854775807,
+    "9862222FB2EC60A32348D9650B2C29928C0A07CB" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "33762BCC-FD16-47C8-BA33-3ECC93D9ACE1",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "B7350B5592D16BB5D738CBCD96DE860E50C9E4DD" : "The%20Project\/UECozmo\/RazzleCozmoUE4\/Plugins\/UnrealEnginePython\/",
+    "9862222FB2EC60A32348D9650B2C29928C0A07CB" : "The%20Project\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "RazzleCozmoUE4",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "UECozmo\/RazzleCozmoUE4\/RazzleCozmoUE4.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Pepin-\/Cozplay.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "9862222FB2EC60A32348D9650B2C29928C0A07CB"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Pepin-\/UnrealEnginePython.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "B7350B5592D16BB5D738CBCD96DE860E50C9E4DD"
+    }
+  ]
+}
