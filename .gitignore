@@ -1,7 +1,7 @@
 Created by https://www.gitignore.io/api/macos,windows,pycharm
 
 # Cloud vision key
-./cozmotography-cloud-vision/keys/
+cozmotography-cloud-vision/keys/
 
 # Exclude certain folders
 [eE]xamples
