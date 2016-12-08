@@ -42,7 +42,7 @@ https://youtu.be/IHKuvYrivQ4
 
 ## Instructions
 
-1. Pygame is required for this game. You can download it from here: http://www.pygame.org/download.shtml
+Pygame is required for this game. You can download it from here: http://www.pygame.org/download.shtml
 
 **In tapatan.py:**
 
