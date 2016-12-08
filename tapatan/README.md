@@ -15,7 +15,7 @@ https://youtu.be/IHKuvYrivQ4
 
 2. We use a top-down projection and the goal behind this and the Makey Makey board was to have a common play-area so that your attention is not divided too much between Cozmo and some external screen.
 
-3. For input, the grid selector uses keyboard input of `LEFT/DOWN/UP/RIGHT` and `ENTER` keys. We experimented with multiple mechanisms like mouse cursors, Myo Armband, Wiimote etc before we decided to go with the trusty gamepad. Most controllers should work for these basic inputs but we decided to go with a PlayStation DualShock 4 controller.
+3. For input, the grid selector uses keyboard input of `LEFT/DOWN/UP/RIGHT` and `ENTER` keys. We experimented with multiple mechanisms like mouse cursors, Myo Armband, Wiimote etc before we decided to go with the trusty gamepad. Most controllers should work for these basic inputs but we chose a PlayStation DualShock 4 controller.
 
 4. There are various mapping tools to set up the key mappings for the controller. For the DS4 these were the ones we used:
   > **OSX** - Joystick Mapper
