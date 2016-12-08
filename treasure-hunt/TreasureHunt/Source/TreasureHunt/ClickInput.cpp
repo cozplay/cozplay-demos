@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "TreasureHunt.h"
 #include "ClickInput.h"
 #include "UT.h"
@@ -40,7 +38,7 @@ void UClickInput::TickComponent( float DeltaTime, ELevelTick TickType, FActorCom
         _didBindControls = true;
     }
     
-    // Raycast down
+    // Raycast down to update hover state
 	FHitResult hit;
     UT::Trace(GetWorld(), GetOwner(), GetOwner()->GetActorLocation(), FVector(0,0,-1), 17.330173, hit);
     AActor *hitActor = hit.Actor.Get();
@@ -61,11 +59,9 @@ void UClickInput::TickComponent( float DeltaTime, ELevelTick TickType, FActorCom
             }
         }
         _hoveredActor = NULL;
-        // Add outline to new hovered actor, if we're not claiming anything currently
+        // Add outline to new hovered actor, if we're not moving toward claimed treasure
         if (hitActor != NULL) {
-            // NOTE: _baitEnabled was not properly reenabled always, possibly related to Cozmo go_to_pose not finishing and losing
-            // Cozmo's world. But with changes for softs, it shouldn't be necessary
-            if (isHitTreasure && ATreasure::ClaimedTreasure() == NULL && ((ATreasure *)hitActor)->IsActive() /*&& _baitEnabled*/) {
+            if (isHitTreasure && ATreasure::ClaimedTreasure() == NULL && ((ATreasure *)hitActor)->IsActive()) {
                 ((ATreasure *)hitActor)->ShowOutline(true);
                 _outlineSound->Play();
                 _hoveredActor = hitActor;
@@ -78,17 +74,14 @@ void UClickInput::TickComponent( float DeltaTime, ELevelTick TickType, FActorCom
     } else if (isHitTreasure) {
         if (!((ATreasure *)_hoveredActor)->IsActive()) {
             _hoveredActor = NULL;
-            //UE_LOG(LogTemp, Warning, TEXT("WASN'T ACTIVE"));
-        } else if (_baitEnabled) {
+        } else if (_claimEnabled) {
             ((ATreasure *)_hoveredActor)->ShowOutline(((ATreasure *)_hoveredActor)->IsActive());
-            //UE_LOG(LogTemp, Warning, TEXT("BAIT ENABLED"));
-        } else {
-            //UE_LOG(LogTemp, Warning, TEXT("BAIT DISABLED"));
         }
     } else if (isHitRobot) {
         ((ARobotTracker *)_hoveredActor)->ShowOutline(true);
     }
     
+    // Update battery meter
     _batteryDepletionSpeed = FMath::Min(_maxBatteryDepletionSpeed, _batteryDepletionSpeed + _batteryDepletionAcceleration * DeltaTime);
     _batteryLevel -= DeltaTime * _batteryDepletionSpeed;
     _batteryText->SetText(FString::Printf(TEXT("|||%d%%"), (int)_batteryLevel));
@@ -99,13 +92,14 @@ void UClickInput::TickComponent( float DeltaTime, ELevelTick TickType, FActorCom
     } else {
         _batteryText->SetTextRenderColor(FColor(121, 98, 34));
     }
-    // TEMP
+    
+    // GAME OVER MESSAGE
     if (_batteryLevel <= 0.0f) {
         _batteryText->SetText("GAME OVER");
     }
 }
 
-void UClickInput::OnClick()
+void UClickInput::OnActionButton()
 {
     if (_hoveredActor == NULL) {
         return;
@@ -117,15 +111,15 @@ void UClickInput::OnClick()
         _batterySound->Play();
     } else if (_hoveredActor->IsA(ATreasure::StaticClass())) {
         if (((ATreasure *)_hoveredActor)->AttemptClaim()) {
-            PlaceBait();
+            StartApproachTreasure();
         }
     }
 }
 
-void UClickInput::PlaceBait()
+void UClickInput::StartApproachTreasure()
 {
     UE_LOG(LogTemp, Warning, TEXT("CLICKED"));
-    _baitEnabled = false;
+    _claimEnabled = false;
     FVector targetLocation = _target->GetActorLocation();
     
     if (_hoveredActor != NULL && _hoveredActor == ATreasure::ClaimedTreasure()) {
@@ -142,7 +136,7 @@ void UClickInput::PlaceBait()
 void UClickInput::OnReach()
 {
     ATreasure::ClaimedTreasure()->OnReached();
-    _cozmoUE->RunCozmoCoroutine("self.on_reach()", this, TEXT("SetBaitEnabled true"));
+    _cozmoUE->RunCozmoCoroutine("self.on_reach()", this, TEXT("SetClaimEnabled true"));
     _score++;
     _scoreText->SetText(FString::Printf(TEXT("%d"), _score));
     _digSound->Play();
@@ -166,7 +160,7 @@ void UClickInput::ToggleBattery()
 void UClickInput::BindControls()
 {
     UInputComponent *inputComponent = GetOwner()->InputComponent;
-    inputComponent->BindAction("PlaceBait", IE_Pressed, this, &UClickInput::OnClick);
+    inputComponent->BindAction("ActionButton", IE_Pressed, this, &UClickInput::OnActionButton);
     inputComponent->BindAction("ToggleDebug", IE_Pressed, this, &UClickInput::ToggleDebug);
     inputComponent->BindAction("ToggleBattery", IE_Pressed, this, &UClickInput::ToggleBattery);
 }

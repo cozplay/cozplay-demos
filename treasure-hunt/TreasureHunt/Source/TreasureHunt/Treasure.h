@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "GameFramework/Actor.h"
@@ -20,35 +18,42 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
+    // True if an outline should be displayed around the treasure spot
     UFUNCTION()
     void ShowOutline(bool shouldShow);
     
+    // True if the treasure spot is claimed and has been reached by Cozmo
     UFUNCTION()
     bool IsReached(){ return _isReached; }
     
+    // True if the treasure spot has been claimed
     UFUNCTION()
     bool IsClaimed(){ return _isClaimed; }
     
-    // Only call on active, unclaimed hole
-    // Returns true if hole was successfully claimed (only one hole can be claimed at a time) 
+    // This should only be called on an active, unclaimed treasure.
+    // Returns true if treasure was successfully claimed (only one treasure can be claimed at a time)
     UFUNCTION()
     bool AttemptClaim();
     
+    // True if the treasure spot should be visible
     UFUNCTION()
     bool IsActive(){ return _isActive; }
     
+    // Show or hide the treasure spot
     UFUNCTION()
     void SetIsActive(bool isActive);
     
+    // Callback for when Cozmo reaches a claimed treasure spot
     UFUNCTION()
     void OnReached();
     
+    // Returns currently claimed treasure (static, as only one treasure at most can be claimed at a time)
     static ATreasure *ClaimedTreasure();
     
 private:
-    UStaticMeshComponent *_unclaimedHole;
+    UStaticMeshComponent *_unclaimedSpot;
+    UStaticMeshComponent *_claimedSpot;
     UStaticMeshComponent *_claimedHole;
-    UStaticMeshComponent *_unfilledHole;
     UStaticMeshComponent *_gem;
     UStaticMeshComponent *_outline;
     bool _isReached = false;

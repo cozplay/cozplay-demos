@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "PoseTracker.h"
@@ -26,6 +24,8 @@ public:
     void ShowOutline(bool shouldShow);
     
 protected:
+    // Fetches tracked pose from Cozmo SDK via CozmoUE object. This should be implemented in subclasses (so RobotTracker
+    // could get Cozmo's pose, CubeTracker could get cube's pose, and so on).
     virtual FCozmoPoseStruct FetchPose() override;
     
 private:

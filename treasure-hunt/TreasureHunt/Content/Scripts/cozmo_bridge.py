@@ -11,7 +11,6 @@ import sys
 class CozmoBridge:
     # Initialization
     def __init__(self, *a, **kw):
-        ue.log('UECozmo __init__')
         #os.environ['COZMO_PROTOCOL_LOG_LEVEL'] = 'DEBUG'
         #os.environ['COZMO_LOG_LEVEL'] = 'DEBUG'
         self._use_logging = True
@@ -23,11 +22,10 @@ class CozmoBridge:
         self._coroutine_future = None
         self._coroutine_done_uobj = None   # Uobject on which the below callback should be invoked
         self._coroutine_done_call = None   # A C++ function call of the form "FunctionName arg1 arg2 ..."
-        self._start_pose = None            # Offset pose sent to unreal by Cozmo's initial pose
+        self._start_pose = None            # Cozmo's initial pose (we offset by inverse before sending to Unreal)
     
     # Starts Cozmo event loop in a new thread
     def start_cozmo(self):
-        ue.log('UECozmo: Spinning off Cozmo thread from ' + str(threading.get_ident()))
         self._cozmo_thread = threading.Thread(target=self.cozmo_main, args=[])
         self._cozmo_thread.start()
     
@@ -35,7 +33,6 @@ class CozmoBridge:
     def stop_cozmo(self):
         self._cozmo_connected = False
         self._cozmo_thread.join()
-        ue.log('UECozmo: Terminated Cozmo thread')
         self._cozmo_thread = None
         self._cozmo_loop = None
         self._cozmo_robot = None
@@ -56,26 +53,22 @@ class CozmoBridge:
                 self._coroutine_done_call = None
                 done_uobj.call(done_call)
     
-    # coroutine_call is a string containing a call to an async python function wrapping Cozmo actions
+    # coroutine_call is a string containing a call to an async Python function wrapping Cozmo actions
     # C++ callback will be invoked on completion if both _coroutine_done_uobj and _coroutine_done_call are set
     # Remember that a callback can reschedule a coroutine
-    # TODO: eval not the safest...
     def run_cozmo_coroutine(self, coroutine_call):
         self._coroutine_future = asyncio.run_coroutine_threadsafe(eval(coroutine_call), self._cozmo_loop)
     
     # Entry point for Cozmo thread
     def cozmo_main(self):
-        ue.log('UECozmo: Cozmo thread is ' + str(threading.get_ident()))
         if self._use_logging:
             cozmo.setup_basic_logging()
         try:
             cozmo.connect(self.cozmo_run, connector=cozmo.run.FirstAvailableConnector())
             self._cozmo_conn.shutdown()
             self._cozmo_loop.stop()
-            ue.log('!!!!Returned from connection')
         except cozmo.ConnectionError as e:
             ue.log('No Cozmo :(')
-            sys.exit('No Cozmo :(')
     
     # Main loop for Cozmo thread, kept alive until joined by main
     async def cozmo_run(self, sdk_conn):
@@ -83,20 +76,22 @@ class CozmoBridge:
         self._cozmo_loop = sdk_conn._loop
         self._cozmo_conn = sdk_conn;
         self._cozmo_robot = await sdk_conn.wait_for_robot()
+        self._cozmo_robot.set_robot_volume(1.0)
         self._cozmo_connected = True
         self._start_pose = self._cozmo_robot.pose
         await self.on_treasure_hunt_start()
-        # self._cozmo_robot.camera.image_stream_enabled = True
         while self._cozmo_connected:
             await asyncio.sleep(0)
         self._cozmo_robot.abort_all_actions()
         self._cozmo_robot.stop_all_motors()
-            
-    def is_cozmo_ready(self) -> bool:
+    
+    # Is Cozmo connected and ready to receive commands
+    def is_cozmo_ready(self):
         return self._cozmo_robot is not None and self._cozmo_robot.is_ready
     
+    # Gets cozmo's current pose, offset by the inverse of his initial pose
     def get_cozmo_pose(self):
-        if self._cozmo_robot is None:
+        if self._cozmo_robot is None or self._start_pose is None:
             return []
         # pose returned is relative to self._start_pose
         pose = self._cozmo_robot.pose
@@ -114,14 +109,12 @@ class CozmoBridge:
                 str(pose.rotation.angle_z.radians - self._start_pose.rotation.angle_z.radians),
                 str(pose.rotation.angle_z.degrees - self._start_pose.rotation.angle_z.degrees)]
     
+    # Stops all current actions and sends Cozmo to xy position using go_to_pose
     async def force_go_to_position(self, x, y):
-        ue.log("Force go to position: " + str(x) + " " + str(y))
         self._cozmo_robot.abort_all_actions()
-        self._cozmo_robot.stop_all_motors()
         # x and y are passed relative to start pose
         await self._cozmo_robot.go_to_pose(cozmo.util.Pose(x + self._start_pose.position.x, y + self._start_pose.position.y, 0,
                                            angle_z=self._start_pose.rotation.angle_z), False).wait_for_completed()
-        ue.log("Got to position")
     
     # Cozmo's behavior on game start
     async def on_treasure_hunt_start(self):

@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "TreasureHunt.h"
 #include "Treasure.h"
 
@@ -18,9 +16,9 @@ void ATreasure::BeginPlay()
 	Super::BeginPlay();
     _claimedTreasure = NULL; // Only necessary for editor (to avoid recompiling for static variable reset)
     
-    _unclaimedHole = (UStaticMeshComponent *)GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("UnclaimedHole"))[0];
+    _unclaimedSpot = (UStaticMeshComponent *)GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("UnclaimedSpot"))[0];
+    _claimedSpot = (UStaticMeshComponent *)GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("ClaimedSpot"))[0];
     _claimedHole = (UStaticMeshComponent *)GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("ClaimedHole"))[0];
-    _unfilledHole = (UStaticMeshComponent *)GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("UnfilledHole"))[0];
     _gem = (UStaticMeshComponent *)GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("Gem"))[0];
     _outline = (UStaticMeshComponent *)GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("Outline"))[0];
     SetIsActive(false);
@@ -75,16 +73,16 @@ bool ATreasure::AttemptClaim()
     if (_claimedTreasure == NULL) {
         _claimedTreasure = this;
         _isClaimed = true;
-        _claimedHole->SetVisibility(true);
-        _unclaimedHole->SetVisibility(false);
+        _claimedSpot->SetVisibility(true);
+        _unclaimedSpot->SetVisibility(false);
         return true;
         
     } else if (_claimedTreasure->IsReached()) {
         _claimedTreasure->SetIsActive(false);
         _claimedTreasure = this;
         _isClaimed = true;
-        _claimedHole->SetVisibility(true);
-        _unclaimedHole->SetVisibility(false);
+        _claimedSpot->SetVisibility(true);
+        _unclaimedSpot->SetVisibility(false);
         return true;
     } else {
         return false;
@@ -95,16 +93,16 @@ void ATreasure::SetIsActive(bool isActive)
 {
     _isActive = isActive;
     if (isActive) {
-        _unclaimedHole->SetVisibility(true);
+        _unclaimedSpot->SetVisibility(true);
         _waitElapsed = 0.0;
     } else {
         if (_claimedTreasure == this) {
             _claimedTreasure = NULL;
         }
         _isClaimed = false;
+        _claimedSpot->SetVisibility(false);
+        _unclaimedSpot->SetVisibility(false);
         _claimedHole->SetVisibility(false);
-        _unclaimedHole->SetVisibility(false);
-        _unfilledHole->SetVisibility(false);
         _gem->SetVisibility(false);
         _outline->SetVisibility(false);
         _activeElapsed = 0.0;
@@ -114,8 +112,8 @@ void ATreasure::SetIsActive(bool isActive)
 
 void ATreasure::OnReached()
 {
-    _claimedHole->SetVisibility(false);
-    _unfilledHole->SetVisibility(true);
+    _claimedSpot->SetVisibility(false);
+    _claimedHole->SetVisibility(true);
     _gem->SetVisibility(true);
     _isReached = true;
 }
