@@ -38,7 +38,6 @@ The game is best played with a controller (we’ve tested it with Dual Shock 4) 
 
 
 It begins with a calibration screen that indicates both where to place Cozmo and how large the projected play area should be scaled. Once everything is set up, press ‘Options’ on DS4 or ‘R’ on keyboard to begin.
-<img src="/uploads/anki/original/1X/2a2f71d740cff911942deb516adbb2f5af2efb07.png" width="394" height="296">
 
 The game is played as follows:
 
@@ -48,34 +47,14 @@ The game is played as follows:
 4. Both Cozmo’s battery level and the number of treasures you’ve collected appear at the bottom of the play area.
 5. The speed at which Cozmo’s battery depletes increases over time. For a more leisurely play style, the battery mechanic can be removed entirely by pressing L1 / ‘B’.
 
-**Claiming Treasure:**
-Hover a treasure spot (Left Stick / WASD):
-<img src="/uploads/anki/original/1X/5997cdb1589151a3b002632005b43602946b2749.png" width="350" height="250">
-
-Select it (X / Space):
-<img src="/uploads/anki/original/1X/a18ed129f8e2924e03bbacf286cceb6490a23d4d.png" width="350" height="250">
-
-Cozmo drives to it:
-<img src="/uploads/anki/original/1X/774c3545210705446f53bf59f9738c9a00f809a7.png" width="350" height="250">
-
-Cozmo gets the treasure!
-<img src="/uploads/anki/original/1X/eb4f24cd54b87f471167bb2c36c01fabe0b409a4.png" width="350" height="250">
-
-**Recharging Cozmo:**
-Hover Cozmo (Left Stick / WASD):
-<img src="/uploads/anki/original/1X/42466d160a7131d55b274c674d069864084ba81d.png" width="370" height="280">
-
-Select Cozmo to recharge (X / Space):
-<img src="/uploads/anki/original/1X/9996feab3012590b377979b09efa40dfb2062f5c.png" width="370" height="280">
-
 
 **Controls:**
 
     Left Stick / WASD	Move the cursor
-    X / Space 		Charge Cozmo / Alert Cozmo
+    X / Space 		    Charge Cozmo / Alert Cozmo
     R1 / Right Mouse 	Toggle debug visuals
     Options / ‘R’		Return to calibration
-    L1 / ‘B’		Toggle battery depletion mechanic
+    L1 / ‘B’		    Toggle battery depletion mechanic
 
 ## Thoughts for the Future
 
