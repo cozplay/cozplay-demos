@@ -8,11 +8,11 @@ from common.cozgame import CozGame
 from cozmo.util import degrees, Pose
 
 '''
-Quick Tap Game - Simple reaction game with cozmo
-@class QuickTapGame
+Speed Tap Game - Simple reaction game with cozmo
+@class SpeedTapGame
 @author - Team Cozplay
 '''
-class QuickTapGame(CozGame):
+class SpeedTapGame(CozGame):
     GAME_ROUNDS = 5
     DEBUG = False
 
@@ -106,9 +106,9 @@ class QuickTapGame(CozGame):
         # activate cube
         self.cube.set_lights(cozmo.lights.white_light.flash())
 
-        if not QuickTapGame.DEBUG:
-            await self.coz.say_text(text="let's play Quick Tap",play_excited_animation=False, duration_scalar=1.3).wait_for_completed()
-            await self.coz.say_text(text="best of "+ self.get_score_text(QuickTapGame.GAME_ROUNDS), play_excited_animation=False, duration_scalar=1.3).wait_for_completed()
+        if not SpeedTapGame.DEBUG:
+            await self.coz.say_text(text="let's play Speed Tap",play_excited_animation=False, duration_scalar=1.3).wait_for_completed()
+            await self.coz.say_text(text="best of "+ self.get_score_text(SpeedTapGame.GAME_ROUNDS), play_excited_animation=False, duration_scalar=1.3).wait_for_completed()
             await self.coz.say_text(text="tap the white cube to start", play_excited_animation=False, duration_scalar=1.3).wait_for_completed()
 
         self.game_flag = 1
@@ -163,7 +163,7 @@ class QuickTapGame(CozGame):
     async def on_tap_round_complete(self):
         await self.say_score()
         self.round = self.round + 1
-        if self.round == QuickTapGame.GAME_ROUNDS:
+        if self.round == SpeedTapGame.GAME_ROUNDS:
             await self.coz.say_text("Game Over").wait_for_completed()
             if self.score > 0:
                 await self.coz.say_text("You beat me in quick tap").wait_for_completed()
@@ -250,4 +250,4 @@ class QuickTapGame(CozGame):
 
 if __name__ == '__main__':
     cozmo.world.World.light_cube_factory = CustomCube
-    QuickTapGame()
+    SpeedTapGame()
