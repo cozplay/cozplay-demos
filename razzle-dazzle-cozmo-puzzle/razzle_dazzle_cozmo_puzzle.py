@@ -124,7 +124,8 @@ class RazzleDazzleCozmoPuzzle:
             backpack_light = cozmo.lights.Light(on_period_ms=100000, on_color=goal)
             self._robot.set_all_backpack_lights(cozmo.lights.Light(goal))
         self._goal = goal
-        await self._robot.say_text(GOALS[goal]).wait_for_completed()
+        self._robot.abort_all_actions()
+        await self._robot.say_text(GOALS[goal], in_parallel=True).wait_for_completed()
 
     # returns True if goal color was achieved
     def update_cubes(self) -> bool:
@@ -140,7 +141,6 @@ class RazzleDazzleCozmoPuzzle:
             stacked_cubes.add(self._cubes[2])
 
         stacked_cubes = list(stacked_cubes)
-        mixed_color = -1
         if len(stacked_cubes) == 0:
             mixed_color = PRIMARY_GOAL
             for cube in self._cubes:
@@ -166,7 +166,7 @@ class RazzleDazzleCozmoPuzzle:
         context.text((0, height/2-10), str(seconds), fill=(255, 255, 255, 255))#, font=FONT)
         context.text((width/2, height/2-10), str(GOALS[self._goal]), fill=(255, 255, 255, 255))#, font=FONT)
         oled_face_data = cozmo.oled_face.convert_image_to_screen_data(text_image)
-        self._robot.display_oled_face_image(oled_face_data, 30000.0)
+        self._robot.display_oled_face_image(oled_face_data, 30000.0, in_parallel=True)
 
     def get_flavor_text(self, score:int) -> str:
         if score >= 20:
@@ -238,6 +238,7 @@ class RazzleDazzleCozmoPuzzle:
                     self.display_timer(int(math.ceil((timer_remaining))))
 
         # Game over
+        self._robot.abort_all_actions()
         await self.perform_ending_animation(score)
         end_text = "You scored " + inflect.engine().number_to_words(score) + " points"
         await self._robot.say_text(end_text, duration_scalar=1.3).wait_for_completed()
