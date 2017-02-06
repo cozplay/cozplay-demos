@@ -85,14 +85,14 @@ class RazzleDazzleCozmoPuzzle:
             if isinstance(obj, cozmo.objects.LightCube):
                 self._cubes.append(obj)
         if len(self._cubes) < NUM_CUBES_REQUIRED:
-            try:
-                cubes = await self._robot.world.wait_until_observe_num_objects(NUM_CUBES_REQUIRED - len(self._cubes),
-                                                                                     cozmo.objects.LightCube,
-                                                                                     CUBE_SEARCH_TIMEOUT)
-                self._cubes = list(set(self._cubes + cubes))
-            except TimeoutError:
-                print("Only found ", len(self._cubes), " cubes")
-                return False
+            cubes = await self._robot.world.wait_until_observe_num_objects(NUM_CUBES_REQUIRED - len(self._cubes),
+                                                                           cozmo.objects.LightCube,
+                                                                           CUBE_SEARCH_TIMEOUT)
+            self._cubes = list(set(self._cubes + cubes))
+
+        if len(self._cubes) < NUM_CUBES_REQUIRED:
+            print("Only found ", len(self._cubes), " cubes")
+            return False
 
         # Assign cubes primary colors
         for index, cube in enumerate(self._cubes):
