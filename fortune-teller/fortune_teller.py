@@ -11,16 +11,13 @@ FotuneTeller - Simple reaction game with Cozmo where Cozmo and player needs to t
 - If player misses hitting the cube at right time, he will lose point
 - If Cozmo misses hitting the cube at right time, he will lose point
 - If both hit the cube at right time, speed will increase for next round and this will continue until game ends
-
-@class PongGame
-@author - Team Cozplay
 '''
 
 '''
 Fortune teller class
 - Whenever cozmo sees a new face, it will say some fortune text
 @class FotuneTeller
-@author Ankit Patel
+@author Team Cozplay
 '''
 
 
