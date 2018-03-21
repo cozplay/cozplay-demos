@@ -24,13 +24,13 @@ ROBOT_SEARCH_TIMEOUT = 3
 CUBE_SEARCH_TIMEOUT = 3
 STACK_THRESHOLD_MM = cozmo.util.Position(30, 30, 50)
 
-RED = cozmo.lights.Color(rgba=(255, 0, 0, 255))
-BLUE = cozmo.lights.Color(rgba=(0, 0, 255, 255))
-YELLOW = cozmo.lights.Color(rgba=(255, 255, 0, 255))
-PURPLE = cozmo.lights.Color(rgba=(138, 43, 226 , 255))
-GREEN = cozmo.lights.Color(rgba=(0, 255, 0, 255))
-ORANGE = cozmo.lights.Color(rgba=(255, 165, 0, 255))
-BLACK = cozmo.lights.Color(rgba=(100, 100, 100, 255))
+RED = cozmo.lights.Color(rgb=(255, 0, 0))
+BLUE = cozmo.lights.Color(rgb=(0, 0, 255))
+YELLOW = cozmo.lights.Color(rgb=(255, 255, 0))
+PURPLE = cozmo.lights.Color(rgb=(138, 43, 226))
+GREEN = cozmo.lights.Color(rgb=(0, 255, 0))
+ORANGE = cozmo.lights.Color(rgb=(255, 165, 0))
+BLACK = cozmo.lights.Color(rgb=(100, 100, 100))
 PRIMARY = [RED, BLUE, YELLOW]
 PRIMARY_GOAL = "PRIMARY"
 GOALS = {PURPLE: "purple", GREEN: "green", ORANGE: "orange", BLACK: "black", PRIMARY_GOAL: "primary"}
